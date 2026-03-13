@@ -474,6 +474,16 @@ If `helix--current-selection' is nil, replace character at point."
   (call-interactively #'kill-ring-save)
   (helix--clear-data))
 
+(defun helix-yank ()
+  "Paste (yank) after the cursor or selection, then select the pasted text."
+  (interactive)
+  (if (use-region-p)
+      (goto-char (region-end))
+    (forward-char))
+  (yank)
+  (activate-mark)
+  (setq deactivate-mark nil))
+
 (defun helix-indent-left ()
   "Indent region leftward and clear Helix selection data."
   (interactive)
@@ -633,7 +643,7 @@ Example that defines the typable command ':format':
     (define-key keymap "x" #'helix-select-line)
     (define-key keymap "d" #'helix-kill-thing-at-point)
     (define-key keymap "y" #'helix-kill-ring-save)
-    (define-key keymap "p" #'yank)
+    (define-key keymap "p" #'helix-yank)
     (define-key keymap "v" #'helix-begin-selection)
     (define-key keymap "u" #'undo)
     (define-key keymap "U" #'undo-redo)
